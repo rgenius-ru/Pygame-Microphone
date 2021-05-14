@@ -141,7 +141,7 @@ class Application:
         self.timer = QTimer()
         self.timer.setSingleShot(False)
         self.timer.setInterval(100)  # in milliseconds
-        self.timer.timeout.connect(self.game_loop)
+        self.timer.timeout.connect(self.game_update)
         self.timer.start()
 
     def update_volume(self):
@@ -184,7 +184,7 @@ class Application:
 
         sys.exit(self._app.exec())
 
-    def game_loop(self):
+    def game_update(self):
         # Game Loop
         self.update_volume()
 
