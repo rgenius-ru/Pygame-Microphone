@@ -132,8 +132,15 @@ class Team:
 
 class Application:
     def __init__(self):
-        self.team_1 = Team('Команда 1')
-        self.team_2 = Team('Команда 2')
+        # self.team_1 = Team('Команда 1')
+        # self.team_2 = Team('Команда 2')
+
+        self.team_1 = Team('Мстители')
+        self.team_1.members = {1: ['Ванёк', ''], 2: ['Санёк', '']}
+
+        self.team_2 = Team('Разрушители')
+        self.team_2.members = {1: ['Кира', ''], 2: ['Белла', ''], 3: ['Мила', '']}
+
         self._app = QApplication(sys.argv)
         self.form = Form()
         self.volume = None
