@@ -1,0 +1,1 @@
+game.exe > log.txt
