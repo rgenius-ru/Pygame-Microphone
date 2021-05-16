@@ -188,6 +188,7 @@ class Form(QMainWindow, Ui_main_form):
                 dialog.exec()
             else:
                 game_round.is_started = False
+                self.run_game_Button.setEnabled(False)
                 print('Найти победителя')
 
             _team_name = game_round.current_team.name
@@ -201,7 +202,17 @@ class Form(QMainWindow, Ui_main_form):
                 self.cmd_1_tableWidget.clearSelection()
                 self.cmd_2_tableWidget.selectRow(_player_id - 1)
 
-            _text = 'Играет: ' + _player_name + ' из команды: ' + _team_name
+            if not game_round.is_started:
+                self.cmd_1_tableWidget.clearSelection()
+                self.cmd_2_tableWidget.clearSelection()
+
+            if not game_round.is_started:
+                self.game_mode_label.setText('Ещё будете орать?')
+
+            if game_round.is_started:
+                _text = 'Играет: ' + _player_name + ' из команды: ' + _team_name
+            else:
+                _text = ''
             self.current_player_label.setText(_text)
 
 
