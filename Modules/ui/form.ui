@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>837</width>
-    <height>561</height>
+    <width>860</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -41,27 +41,20 @@
            <height>0</height>
           </size>
          </property>
-         <widget class="QPushButton" name="exitButton">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>190</y>
-            <width>124</width>
-            <height>25</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Выход</string>
-          </property>
-         </widget>
          <widget class="QSplitter" name="splitter">
           <property name="geometry">
            <rect>
             <x>10</x>
             <y>10</y>
             <width>124</width>
-            <height>125</height>
+            <height>161</height>
            </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -153,6 +146,26 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="score_label">
+            <property name="font">
+             <font>
+              <pointsize>42</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(239, 41, 41);</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -262,6 +275,46 @@
             </layout>
            </widget>
           </item>
+          <item>
+           <widget class="QWidget" name="widget_10" native="true">
+            <layout class="QVBoxLayout" name="verticalLayout_5">
+             <item>
+              <widget class="QLabel" name="game_mode_label">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="current_player_label">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="widget_11" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <item>
+                 <widget class="QPushButton" name="run_game_Button">
+                  <property name="text">
+                   <string>Начать</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="end_game_Button">
+                  <property name="text">
+                   <string>Закончить</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -277,6 +330,13 @@
           <enum>Qt::RightToLeft</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QPushButton" name="exitButton">
+            <property name="text">
+             <string>Выход</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QWidget" name="widget_9" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -352,25 +412,25 @@
     <string>Фоны</string>
    </property>
   </action>
+  <action name="action_Run_Game">
+   <property name="text">
+    <string>Начать игру</string>
+   </property>
+   <property name="toolTip">
+    <string>Начать игру</string>
+   </property>
+  </action>
+  <action name="action_End_Game">
+   <property name="text">
+    <string>Закончить игру</string>
+   </property>
+   <property name="toolTip">
+    <string>Закончить игру</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>regButton</sender>
-   <signal>clicked()</signal>
-   <receiver>action_Reg</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>90</x>
-     <y>65</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>exitButton</sender>
    <signal>clicked()</signal>
@@ -380,22 +440,6 @@
     <hint type="sourcelabel">
      <x>90</x>
      <y>221</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>musicButton</sender>
-   <signal>clicked()</signal>
-   <receiver>action_Music</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>90</x>
-     <y>91</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -420,6 +464,54 @@
    </hints>
   </connection>
   <connection>
+   <sender>fonButton</sender>
+   <signal>clicked()</signal>
+   <receiver>action_Fon</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>90</x>
+     <y>39</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>regButton</sender>
+   <signal>clicked()</signal>
+   <receiver>action_Reg</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>90</x>
+     <y>65</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>musicButton</sender>
+   <signal>clicked()</signal>
+   <receiver>action_Music</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>90</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>commandButton</sender>
    <signal>clicked()</signal>
    <receiver>action_Command_Game</receiver>
@@ -436,14 +528,30 @@
    </hints>
   </connection>
   <connection>
-   <sender>fonButton</sender>
+   <sender>run_game_Button</sender>
    <signal>clicked()</signal>
-   <receiver>action_Fon</receiver>
+   <receiver>action_Run_Game</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>90</x>
-     <y>39</y>
+     <x>310</x>
+     <y>581</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>end_game_Button</sender>
+   <signal>clicked()</signal>
+   <receiver>action_End_Game</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>549</x>
+     <y>581</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>

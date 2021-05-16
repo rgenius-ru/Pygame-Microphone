@@ -8,7 +8,7 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QTableWidgetItem
 
 from Modules.ui.form import Ui_main_form
-from Modules.ui.reg_dialog import Ui_Dialog
+from Modules.ui import reg_dialog, results
 
 
 class Form(QMainWindow, Ui_main_form):
@@ -27,6 +27,8 @@ class Form(QMainWindow, Ui_main_form):
         self.action_Music.triggered.connect(self.music)
         self.action_One_Player.triggered.connect(self.one_player)
         self.action_Command_Game.triggered.connect(self.command_game)
+        self.action_Run_Game.triggered.connect(self.run_game)
+        self.action_End_Game.triggered.connect(self.end_game)
 
     def reg(self):
         dialog = RegDialog(self)
@@ -48,19 +50,47 @@ class Form(QMainWindow, Ui_main_form):
             print("RegDialog: Cancel")
 
     def music(self):
+        print('music')
         pass
 
     def one_player(self):
+        print('one_player')
         pass
 
     def command_game(self):
+        print('command_game')
         pass
 
     def fon(self):
+        print('fon')
+        pass
+
+    def run_game(self):
+        print('run_game')
+        game.current_score = 0
+        self.score_label.setText(str(game.current_score))
+        game.started = True
+
+    def end_game(self):
+        if game.started:
+            game.started = False
+            print('end_game')
+            dialog = ResultsDialog(self)
+            dialog.score_label.setText(str(game.current_score))
+            dialog.exec()
+
+
+class ResultsDialog(QDialog, results.Ui_dialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+        self._connect_signals_slots()
+
+    def _connect_signals_slots(self):
         pass
 
 
-class RegDialog(QDialog, Ui_Dialog):
+class RegDialog(QDialog, reg_dialog.Ui_Dialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
@@ -194,11 +224,22 @@ class Application:
     def game_update(self):
         # Game Loop
         self.update_volume()
+        if game.started:
+            if base_station.received_data:
+                _volume = int(base_station.received_data[1:])
+                if _volume > 16:
+                    game.current_score += _volume
+                    self.form.score_label.setText(str(game.current_score))
 
 
-def start_round():
-    pass
+class Game:
+    def __init__(self):
+        self.current_score = 0
+        self.started = False
+        self.player_mode = None  # None or 'multi' or 'one'
 
+
+game = Game()
 
 base_station = BaseStation()
 base_station.start()
