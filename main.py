@@ -18,6 +18,8 @@ class Form(QMainWindow, Ui_main_form):
         self._connect_signals_slots()
         self.run_game_Button.setEnabled(False)
         self.end_game_Button.setEnabled(False)
+        self.commandButton.setEnabled(False)
+        self.onePlayerButton.setEnabled(False)
 
     def closeEvent(self, *event) -> None:
         base_station.stop()
@@ -51,11 +53,18 @@ class Form(QMainWindow, Ui_main_form):
 
             self.create_table(self.cmd_1_tableWidget, app.team_1)
             self.create_table(self.cmd_2_tableWidget, app.team_2)
+
+            count_1 = len(app.team_1.members)
+            count_2 = len(app.team_2.members)
+            self.onePlayerButton.setEnabled(count_1 > 1)
+            self.commandButton.setEnabled((count_1 > 0) and (count_2 > 0))
+
         elif response == QDialog.Rejected:
             print("RegDialog: Cancel")
 
     def create_table(self, table_widget, team):
-        # table_widget.setRowCount(1)
+        table_widget.setRowCount(0)
+        table_widget.clear()
         table_widget.setColumnCount(2)
         table_header = "Ник", "Баллы"
         table_widget.setHorizontalHeaderLabels(table_header)
@@ -86,15 +95,21 @@ class Form(QMainWindow, Ui_main_form):
         self.run_game_Button.setEnabled(True)
 
         if game_round.is_started:
-            game_round.next_player()
+            game_round.first_player()
         else:
             game_round.is_started = True
             game_round.current_team = app.team_1
-            game_round.next_player()
+            game_round.first_player()
+
+        _max_steps = len(app.team_1.members)
+        game_round.max_steps = _max_steps
+        game_round.current_step = 1
 
         _team_name = game_round.current_team.name
         _player_id = game_round.current_team.current_player_id
         _player_name = game_round.current_player_name
+
+        self.cmd_1_tableWidget.selectRow(_player_id - 1)
 
         print('Название команды:', _team_name)
         print('Имя игрока', _player_name)
@@ -110,15 +125,21 @@ class Form(QMainWindow, Ui_main_form):
         self.run_game_Button.setEnabled(True)
 
         if game_round.is_started:
-            game_round.next_player()
+            game_round.first_player()
         else:
             game_round.is_started = True
             game_round.current_team = app.team_1
-            game_round.next_player()
+            game_round.first_player()
+
+        _max_steps = 2 * max(len(app.team_1.members), len(app.team_2.members))
+        game_round.max_steps = _max_steps
+        game_round.current_step = 1
 
         _team_name = game_round.current_team.name
         _player_id = game_round.current_team.current_player_id
         _player_name = game_round.current_player_name
+
+        self.cmd_1_tableWidget.selectRow(_player_id - 1)
 
         print('Название команды:', _team_name)
         print('Имя игрока', _player_name)
@@ -156,23 +177,32 @@ class Form(QMainWindow, Ui_main_form):
             print('end_game')
 
             if game.player_mode == 'multi':
-                if game_round.current_team == app.team_1:
-                    game_round.current_team = app.team_2
-                elif game_round.current_team == app.team_2:
-                    game_round.current_team = app.team_1
+                game_round.next_team()
 
             game_round.next_player()
+
+            if game_round.current_step < game_round.max_steps:
+                game_round.current_step += 1
+                dialog = ResultsDialog(self)
+                dialog.score_label.setText(str(game.current_score))
+                dialog.exec()
+            else:
+                game_round.is_started = False
+                print('Найти победителя')
 
             _team_name = game_round.current_team.name
             _player_id = game_round.current_team.current_player_id
             _player_name = game_round.current_player_name
 
+            if game_round.current_team == app.team_1:
+                self.cmd_2_tableWidget.clearSelection()
+                self.cmd_1_tableWidget.selectRow(_player_id - 1)
+            elif game_round.current_team == app.team_2:
+                self.cmd_1_tableWidget.clearSelection()
+                self.cmd_2_tableWidget.selectRow(_player_id - 1)
+
             _text = 'Играет: ' + _player_name + ' из команды: ' + _team_name
             self.current_player_label.setText(_text)
-
-            dialog = ResultsDialog(self)
-            dialog.score_label.setText(str(game.current_score))
-            dialog.exec()
 
 
 class ResultsDialog(QDialog, results.Ui_dialog):
@@ -334,6 +364,19 @@ class Round:
         self.current_team = None
         self.current_player_id = None
         self.current_player_name = None
+        self.max_steps = None
+        self.current_step = None
+
+    def first_player(self):
+        if self.current_team:
+            self.current_team.current_player_id = 1
+            self.current_player_name = self.current_team.members.get(1)[0]
+
+    def next_team(self):
+        if game_round.current_team == app.team_1:
+            game_round.current_team = app.team_2
+        elif game_round.current_team == app.team_2:
+            game_round.current_team = app.team_1
 
     def next_player(self):
         if self.current_team:
