@@ -16,6 +16,8 @@ class Form(QMainWindow, Ui_main_form):
         super().__init__(parent)
         self.setupUi(self)
         self._connect_signals_slots()
+        self.run_game_Button.setEnabled(False)
+        self.end_game_Button.setEnabled(False)
 
     def closeEvent(self, *event) -> None:
         base_station.stop()
@@ -46,8 +48,32 @@ class Form(QMainWindow, Ui_main_form):
 
             self.command_1_label.setText(name1)
             self.command_2_label.setText(name2)
+
+            self.create_table(self.cmd_1_tableWidget, app.team_1)
+            self.create_table(self.cmd_2_tableWidget, app.team_2)
         elif response == QDialog.Rejected:
             print("RegDialog: Cancel")
+
+    def create_table(self, table_widget, team):
+        # table_widget.setRowCount(1)
+        table_widget.setColumnCount(2)
+        table_header = "Ник", "Баллы"
+        table_widget.setHorizontalHeaderLabels(table_header)
+
+        if not team.members:
+            team.members = {1: ['', '']}
+
+        for row, member in team.members.items():
+            if member and isinstance(row, int):
+                table_widget.setRowCount(table_widget.rowCount() + 1)
+                name, scores = member
+                table_widget.setItem(row - 1, 0, QTableWidgetItem(name))
+                table_widget.setItem(row - 1, 1, QTableWidgetItem(scores))
+
+        table_widget.horizontalHeader().setStretchLastSection(True)
+        # table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        table_widget.setColumnWidth(0, 150)
+        table_widget.item(0, 1).setFlags(table_widget.item(0, 1).flags() & ~Qt.ItemIsEditable)
 
     def music(self):
         print('music')
@@ -55,11 +81,51 @@ class Form(QMainWindow, Ui_main_form):
 
     def one_player(self):
         print('one_player')
-        pass
+        game.player_mode = 'one'
+        self.game_mode_label.setText('Одиночная игра')
+        self.run_game_Button.setEnabled(True)
+
+        if game_round.is_started:
+            game_round.next_player()
+        else:
+            game_round.is_started = True
+            game_round.current_team = app.team_1
+            game_round.next_player()
+
+        _team_name = game_round.current_team.name
+        _player_id = game_round.current_team.current_player_id
+        _player_name = game_round.current_player_name
+
+        print('Название команды:', _team_name)
+        print('Имя игрока', _player_name)
+        print('Id игрока:', _player_id)
+
+        _text = 'Играет: ' + _player_name + ' из команды: ' + _team_name
+        self.current_player_label.setText(_text)
 
     def command_game(self):
         print('command_game')
-        pass
+        game.player_mode = 'multi'
+        self.game_mode_label.setText('Командная игра')
+        self.run_game_Button.setEnabled(True)
+
+        if game_round.is_started:
+            game_round.next_player()
+        else:
+            game_round.is_started = True
+            game_round.current_team = app.team_1
+            game_round.next_player()
+
+        _team_name = game_round.current_team.name
+        _player_id = game_round.current_team.current_player_id
+        _player_name = game_round.current_player_name
+
+        print('Название команды:', _team_name)
+        print('Имя игрока', _player_name)
+        print('Id игрока:', _player_id)
+
+        _text = 'Играет: ' + _player_name + ' из команды: ' + _team_name
+        self.current_player_label.setText(_text)
 
     def fon(self):
         print('fon')
@@ -70,11 +136,40 @@ class Form(QMainWindow, Ui_main_form):
         game.current_score = 0
         self.score_label.setText(str(game.current_score))
         game.started = True
+        self.end_game_Button.setEnabled(True)
+        self.run_game_Button.setEnabled(False)
+
+        _team_name = game_round.current_team.name
+        _player_id = game_round.current_team.current_player_id
+        _player_name = game_round.current_player_name
+
+        print('Игра запущена:', game_round.is_started)
+        print('Название команды:', _team_name)
+        print('Имя игрока', _player_name)
+        print('Id игрока:', _player_id)
 
     def end_game(self):
         if game.started:
             game.started = False
+            self.run_game_Button.setEnabled(True)
+            self.end_game_Button.setEnabled(False)
             print('end_game')
+
+            if game.player_mode == 'multi':
+                if game_round.current_team == app.team_1:
+                    game_round.current_team = app.team_2
+                elif game_round.current_team == app.team_2:
+                    game_round.current_team = app.team_1
+
+            game_round.next_player()
+
+            _team_name = game_round.current_team.name
+            _player_id = game_round.current_team.current_player_id
+            _player_name = game_round.current_player_name
+
+            _text = 'Играет: ' + _player_name + ' из команды: ' + _team_name
+            self.current_player_label.setText(_text)
+
             dialog = ResultsDialog(self)
             dialog.score_label.setText(str(game.current_score))
             dialog.exec()
@@ -158,6 +253,7 @@ class Team:
     def __init__(self, name=''):
         self.name = name
         self.members = None
+        self.current_player_id = None
 
 
 class Application:
@@ -232,14 +328,36 @@ class Application:
                     self.form.score_label.setText(str(game.current_score))
 
 
+class Round:
+    def __init__(self):
+        self.is_started = False
+        self.current_team = None
+        self.current_player_id = None
+        self.current_player_name = None
+
+    def next_player(self):
+        if self.current_team:
+            if not self.current_team.current_player_id:
+                self.current_team.current_player_id = 0
+
+            if self.current_team.current_player_id < len(self.current_team.members):
+                self.current_team.current_player_id += 1
+            else:
+                self.current_team.current_player_id = 1
+
+            self.current_player_name = self.current_team.members.get(self.current_team.current_player_id)[0]
+
+
 class Game:
     def __init__(self):
         self.current_score = 0
         self.started = False
         self.player_mode = None  # None or 'multi' or 'one'
+        self.current_player = None
 
 
 game = Game()
+game_round = Round()
 
 base_station = BaseStation()
 base_station.start()
