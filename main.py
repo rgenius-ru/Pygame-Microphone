@@ -8,7 +8,7 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QTableWidgetItem
 
 from Modules.ui.form import Ui_main_form
-from Modules.ui import reg_dialog, results
+from Modules.ui import reg_dialog, results, rang
 
 
 class Form(QMainWindow, Ui_main_form):
@@ -94,12 +94,16 @@ class Form(QMainWindow, Ui_main_form):
         self.game_mode_label.setText('Одиночная игра')
         self.run_game_Button.setEnabled(True)
 
-        if game_round.is_started:
-            game_round.first_player()
-        else:
+        if not game_round.is_started:
             game_round.is_started = True
             game_round.current_team = app.team_1
-            game_round.first_player()
+            app.team_1.clear_score()
+            app.team_2.clear_score()
+            self.create_table(self.cmd_1_tableWidget, app.team_1)
+            self.create_table(self.cmd_2_tableWidget, app.team_2)
+            self.score_label.setText('0')
+
+        game_round.first_player()
 
         _max_steps = len(app.team_1.members)
         game_round.max_steps = _max_steps
@@ -124,12 +128,16 @@ class Form(QMainWindow, Ui_main_form):
         self.game_mode_label.setText('Командная игра')
         self.run_game_Button.setEnabled(True)
 
-        if game_round.is_started:
-            game_round.first_player()
-        else:
+        if not game_round.is_started:
             game_round.is_started = True
             game_round.current_team = app.team_1
-            game_round.first_player()
+            app.team_1.clear_score()
+            app.team_2.clear_score()
+            self.create_table(self.cmd_1_tableWidget, app.team_1)
+            self.create_table(self.cmd_2_tableWidget, app.team_2)
+            self.score_label.setText('0')
+
+        game_round.first_player()
 
         _max_steps = 2 * max(len(app.team_1.members), len(app.team_2.members))
         game_round.max_steps = _max_steps
@@ -176,8 +184,16 @@ class Form(QMainWindow, Ui_main_form):
             self.end_game_Button.setEnabled(False)
             print('end_game')
 
-            if game.player_mode == 'multi':
-                game_round.next_team()
+            _team_name = game_round.current_team.name
+            _player_id = game_round.current_team.current_player_id
+            _player_name = game_round.current_player_name
+
+            if game_round.current_team == app.team_1:
+                app.team_1.members.get(_player_id)[1] = str(game.current_score)
+                self.cmd_1_tableWidget.item(_player_id - 1, 1).setText(str(game.current_score))
+            else:
+                app.team_2.members.get(_player_id)[1] = str(game.current_score)
+                self.cmd_2_tableWidget.item(_player_id - 1, 1).setText(str(game.current_score))
 
             game_round.next_player()
 
@@ -189,16 +205,26 @@ class Form(QMainWindow, Ui_main_form):
             else:
                 game_round.is_started = False
                 self.run_game_Button.setEnabled(False)
-                print('Найти победителя')
+
+            if not game_round.is_started:
+                _sum_scores = game_round.current_team.get_sum_scores
+                self.cmd_1_itogi_label.setText(_sum_scores)
+                # TODO calculate winner
 
             _team_name = game_round.current_team.name
             _player_id = game_round.current_team.current_player_id
             _player_name = game_round.current_player_name
 
+            if not game_round.is_started:
+                dialog = RangDialog(self)
+                if game.player_mode == 'one':
+                    dialog.team_1_tableWidget.setMaximumWidth(0)
+                dialog.exec()
+
             if game_round.current_team == app.team_1:
                 self.cmd_2_tableWidget.clearSelection()
                 self.cmd_1_tableWidget.selectRow(_player_id - 1)
-            elif game_round.current_team == app.team_2:
+            else:
                 self.cmd_1_tableWidget.clearSelection()
                 self.cmd_2_tableWidget.selectRow(_player_id - 1)
 
@@ -217,6 +243,16 @@ class Form(QMainWindow, Ui_main_form):
 
 
 class ResultsDialog(QDialog, results.Ui_dialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+        self._connect_signals_slots()
+
+    def _connect_signals_slots(self):
+        pass
+
+
+class RangDialog(QDialog, rang.Ui_Dialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
@@ -293,8 +329,19 @@ class RegDialog(QDialog, reg_dialog.Ui_Dialog):
 class Team:
     def __init__(self, name=''):
         self.name = name
-        self.members = None
-        self.current_player_id = None
+        self.members = {1: ['', '']}
+        self.current_player_id = 0
+        self._sum_scores = None
+
+    def clear_score(self):
+        for member in self.members.items():
+            member[1][1] = ''
+
+    def get_sum_scores(self):
+        self._sum_scores = 0
+        for member in self.members.items():
+            self._sum_scores += int(member[1][1])
+            return self._sum_scores
 
 
 class Application:
@@ -373,10 +420,12 @@ class Round:
     def __init__(self):
         self.is_started = False
         self.current_team = None
-        self.current_player_id = None
         self.current_player_name = None
         self.max_steps = None
         self.current_step = None
+        self.winner_player_id = None
+        self.winner_player_name = None
+        self.winner_team = None
 
     def first_player(self):
         if self.current_team:
@@ -384,12 +433,15 @@ class Round:
             self.current_player_name = self.current_team.members.get(1)[0]
 
     def next_team(self):
-        if game_round.current_team == app.team_1:
-            game_round.current_team = app.team_2
-        elif game_round.current_team == app.team_2:
-            game_round.current_team = app.team_1
+        if self.current_team == app.team_1:
+            self.current_team = app.team_2
+        elif self.current_team == app.team_2:
+            self.current_team = app.team_1
 
     def next_player(self):
+        if game.player_mode == 'multi':
+            self.next_team()
+
         if self.current_team:
             if not self.current_team.current_player_id:
                 self.current_team.current_player_id = 0

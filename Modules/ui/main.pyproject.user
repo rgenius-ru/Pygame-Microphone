@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.15.0, 2021-05-10T23:04:24. -->
+<!-- Written by QtCreator 4.15.0, 2021-05-16T23:03:21. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -173,16 +173,16 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/home/rg/PycharmProjects/delete/pyqt_test_2/ui/app.py</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./home/rg/PycharmProjects/delete/pyqt_test_2/ui/app.py</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/rg/PycharmProjects/delete/pyqt_test_2/ui/app.py</value>
-    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{7d2e23ee-0945-4d2a-9bdf-7d940ed7eb2a}</value>
-    <value type="QString" key="PythonEditor.RunConfiguation.Script">/home/rg/PycharmProjects/delete/pyqt_test_2/ui/app.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/home/rg/PycharmProjects/Pygame-Microphone/Modules/ui/app.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./home/rg/PycharmProjects/Pygame-Microphone/Modules/ui/app.py</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/rg/PycharmProjects/Pygame-Microphone/Modules/ui/app.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{04362738-22f0-4be8-ae3e-2b9d502fb37a}</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Script">/home/rg/PycharmProjects/Pygame-Microphone/Modules/ui/app.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/rg/PycharmProjects/delete/pyqt_test_2/ui</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/rg/PycharmProjects/Pygame-Microphone/Modules/ui</value>
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>
