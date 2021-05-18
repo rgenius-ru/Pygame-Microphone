@@ -218,29 +218,59 @@ class Form(QMainWindow, Ui_main_form):
 
             if not game_round.is_started:
                 rang_table = game_round.get_rang_table()
-
+                text = ''
                 dialog = RangDialog(self)
                 if game.player_mode == 'one':
-                    text = ''
+                    dialog.team_2_tableWidget.setMaximumWidth(0)
+
+                    members = game_round.current_team.members.items()
+                    rating_table = sorted(members, reverse=True, key=lambda score: int(score[1][1]))
+                    print('\nСортированный рейтинг')
+                    print(rating_table)
+                    rating_table = dict(rating_table)
+                    print(rating_table)
+                    team = Team()
+                    team.members = rating_table
+                    dialog.create_table(dialog.team_1_tableWidget, team)
+
                     if len(rang_table) == 1:
                         name = list(rang_table.values())[0][0]
                         text = 'Победитель ' + name + '!'
                     elif len(rang_table) == len(game_round.current_team.members):
                         text = 'Ничья!'
-                    elif len(rang_table) > 2 and len(rang_table) > len(game_round.current_team.members):
+                    elif len(game_round.current_team.members) > len(rang_table) >= 2:
                         text = 'Победители '
                         for winner in rang_table.values():
-                            text += winner[0][0] + ' '
+                            text += winner[0] + ' '
                         text += ' !!!'
                 elif game.player_mode == 'multi':
+                    members = app.team_1.members.items()
+                    rating_table = sorted(members, reverse=True, key=lambda score: int(score[1][1]))
+                    print('\nСортированный рейтинг')
+                    print(rating_table)
+                    rating_table = dict(rating_table)
+                    print(rating_table)
+                    team = Team()
+                    team.members = rating_table
+                    dialog.create_table(dialog.team_1_tableWidget, team)
+
+                    members = app.team_2.members.items()
+                    rating_table = sorted(members, reverse=True, key=lambda score: int(score[1][1]))
+                    print('\nСортированный рейтинг')
+                    print(rating_table)
+                    rating_table = dict(rating_table)
+                    print(rating_table)
+                    team = Team()
+                    team.members = rating_table
+                    dialog.create_table(dialog.team_2_tableWidget, team)
+
                     if len(rang_table) > 1:
                         text = 'Ничья!'
                     else:
                         text = 'Победила команда ' + rang_table[0].name + '!'
 
-                    print(text)
-                    dialog.team_1_tableWidget.setMaximumWidth(0)
-                    dialog.win_name_label.setText(text)
+                print(text)
+                dialog.win_name_label.setText(text)
                 dialog.exec()
 
             if game_round.current_team == app.team_1:
@@ -282,6 +312,28 @@ class RangDialog(QDialog, rang.Ui_Dialog):
 
     def _connect_signals_slots(self):
         pass
+
+    def create_table(self, table_widget, sorted_rating):
+        table_widget.setRowCount(0)
+        table_widget.clear()
+        table_widget.setColumnCount(2)
+        table_header = "Ник", "Баллы"
+        table_widget.setHorizontalHeaderLabels(table_header)
+
+        if not sorted_rating.members:
+            sorted_rating.members = {1: ['', '']}
+
+        for index, member in enumerate(sorted_rating.members.items()):
+            if member:
+                table_widget.setRowCount(table_widget.rowCount() + 1)
+                name, scores = member[1]
+                table_widget.setItem(index, 0, QTableWidgetItem(name))
+                table_widget.setItem(index, 1, QTableWidgetItem(scores))
+
+        table_widget.horizontalHeader().setStretchLastSection(True)
+        # table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        table_widget.setColumnWidth(0, 150)
+        table_widget.item(0, 1).setFlags(table_widget.item(0, 1).flags() & ~Qt.ItemIsEditable)
 
 
 class RegDialog(QDialog, reg_dialog.Ui_Dialog):
