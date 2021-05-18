@@ -424,11 +424,15 @@ class Application:
         # self.team_1 = Team('Команда 1')
         # self.team_2 = Team('Команда 2')
 
-        self.team_1 = Team('Мстители')
-        self.team_1.members = {1: ['Ванёк', ''], 2: ['Санёк', '']}
+        # self.team_1 = Team('Мстители')
+        # self.team_1.members = {1: ['Ванёк', ''], 2: ['Санёк', '']}
+        self.team_1 = Team('')
+        self.team_1.members = {1: ['', '']}
 
-        self.team_2 = Team('Разрушители')
-        self.team_2.members = {1: ['Кира', ''], 2: ['Белла', ''], 3: ['Мила', '']}
+        # self.team_2 = Team('Разрушители')
+        # self.team_2.members = {1: ['Кира', ''], 2: ['Белла', ''], 3: ['Мила', '']}
+        self.team_2 = Team('')
+        self.team_2.members = {1: ['', '']}
 
         self._app = QApplication(sys.argv)
         self.form = Form()

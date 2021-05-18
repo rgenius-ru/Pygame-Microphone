@@ -16,6 +16,9 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="windowTitle">
+   <string>Game Microphone</string>
+  </property>
   <property name="styleSheet">
    <string notr="true"/>
   </property>
