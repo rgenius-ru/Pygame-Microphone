@@ -199,12 +199,22 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="cmd_1_itogi_label">
+                    <widget class="QLabel" name="cmd_1_itogi_text_label">
                      <property name="text">
-                      <string>Итоги</string>
+                      <string>Итог</string>
                      </property>
                      <property name="alignment">
-                      <set>Qt::AlignCenter</set>
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="cmd_1_itogi_label">
+                     <property name="text">
+                      <string>0</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -257,12 +267,22 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="cmd_2_itogi_label">
+                    <widget class="QLabel" name="cmd_2_itogi_text_label">
                      <property name="text">
-                      <string>Итоги</string>
+                      <string>Итог</string>
                      </property>
                      <property name="alignment">
-                      <set>Qt::AlignCenter</set>
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="cmd_2_itogi_label">
+                     <property name="text">
+                      <string>0</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                      </property>
                     </widget>
                    </item>

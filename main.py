@@ -136,6 +136,8 @@ class Form(QMainWindow, Ui_main_form):
             self.create_table(self.cmd_1_tableWidget, app.team_1)
             self.create_table(self.cmd_2_tableWidget, app.team_2)
             self.score_label.setText('0')
+            self.cmd_1_itogi_label.clear()
+            self.cmd_2_itogi_label.clear()
 
         game_round.first_player()
 
@@ -191,9 +193,13 @@ class Form(QMainWindow, Ui_main_form):
             if game_round.current_team == app.team_1:
                 app.team_1.members.get(_player_id)[1] = str(game.current_score)
                 self.cmd_1_tableWidget.item(_player_id - 1, 1).setText(str(game.current_score))
+                _sum_scores = game_round.current_team.get_sum_scores()
+                self.cmd_1_itogi_label.setText(str(_sum_scores))
             else:
                 app.team_2.members.get(_player_id)[1] = str(game.current_score)
                 self.cmd_2_tableWidget.item(_player_id - 1, 1).setText(str(game.current_score))
+                _sum_scores = game_round.current_team.get_sum_scores()
+                self.cmd_2_itogi_label.setText(str(_sum_scores))
 
             game_round.next_player()
 
@@ -206,19 +212,35 @@ class Form(QMainWindow, Ui_main_form):
                 game_round.is_started = False
                 self.run_game_Button.setEnabled(False)
 
-            if not game_round.is_started:
-                _sum_scores = game_round.current_team.get_sum_scores
-                self.cmd_1_itogi_label.setText(_sum_scores)
-                # TODO calculate winner
-
             _team_name = game_round.current_team.name
             _player_id = game_round.current_team.current_player_id
             _player_name = game_round.current_player_name
 
             if not game_round.is_started:
+                rang_table = game_round.get_rang_table()
+
                 dialog = RangDialog(self)
                 if game.player_mode == 'one':
+                    text = ''
+                    if len(rang_table) == 1:
+                        name = list(rang_table.values())[0][0]
+                        text = 'Победитель ' + name + '!'
+                    elif len(rang_table) == len(game_round.current_team.members):
+                        text = 'Ничья!'
+                    elif len(rang_table) > 2 and len(rang_table) > len(game_round.current_team.members):
+                        text = 'Победители '
+                        for winner in rang_table.values():
+                            text += winner[0][0] + ' '
+                        text += ' !!!'
+                elif game.player_mode == 'multi':
+                    if len(rang_table) > 1:
+                        text = 'Ничья!'
+                    else:
+                        text = 'Победила команда ' + rang_table[0].name + '!'
+
+                    print(text)
                     dialog.team_1_tableWidget.setMaximumWidth(0)
+                    dialog.win_name_label.setText(text)
                 dialog.exec()
 
             if game_round.current_team == app.team_1:
@@ -340,8 +362,9 @@ class Team:
     def get_sum_scores(self):
         self._sum_scores = 0
         for member in self.members.items():
-            self._sum_scores += int(member[1][1])
-            return self._sum_scores
+            if member[1][1]:
+                self._sum_scores += int(member[1][1])
+        return self._sum_scores
 
 
 class Application:
@@ -426,6 +449,55 @@ class Round:
         self.winner_player_id = None
         self.winner_player_name = None
         self.winner_team = None
+
+    def get_rang_table(self):
+        table = dict()
+        scores = []
+
+        if game.player_mode == 'one':
+            members = self.current_team.members
+            print('\nУчастики')
+            print(members)
+            for member in members:
+                score = members.get(member)[1]
+                if score:
+                    scores.append(int(score))
+                else:
+                    scores.append(0)
+
+            max_score = max(scores)
+            print('\nРейтинг участников')
+            print(scores)
+            print('\nМакс балл')
+            print(max_score)
+            for index, score in enumerate(scores, 1):
+                if score == max_score:
+                    table.update({index: members.get(index)})
+
+            print('\nПобедители')
+            print(table)
+
+        elif game.player_mode == 'multi':
+            print('\nУчастики команды 1')
+            print(app.team_1.members)
+            print('\nУчастики команды 2')
+            print(app.team_2.members)
+
+            print('\nИтоговый счёт команды 1')
+            team1_score = app.team_1.get_sum_scores()
+            print(team1_score)
+            print('\nИтоговый счёт команды 2')
+            team2_score = app.team_2.get_sum_scores()
+            print(team2_score)
+
+            if team1_score > team2_score:
+                return [app.team_1]
+            if team1_score < team2_score:
+                return [app.team_2]
+            if team1_score == team2_score:
+                return [app.team_1, app.team_2]
+
+        return table
 
     def first_player(self):
         if self.current_team:
