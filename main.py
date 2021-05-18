@@ -583,7 +583,7 @@ class Game:
     def __init__(self):
         self.current_score = 0
         self.started = False
-        self.player_mode = None  # None or 'multi' or 'one'
+        self.player_mode = None   # None or 'multi' or 'one'
         self.current_player = None
 
 
