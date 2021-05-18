@@ -432,6 +432,7 @@ class Application:
 
         self._app = QApplication(sys.argv)
         self.form = Form()
+        self.form.setStyleSheet(stylesheet)
         self.volume = None
 
         self.timer = QTimer()
@@ -585,6 +586,14 @@ class Game:
         self.player_mode = None  # None or 'multi' or 'one'
         self.current_player = None
 
+
+stylesheet = """
+    QMainWindow {
+        background-image: url("Modules/ui/resources/background2.jpg"); 
+        background-repeat: no-repeat; 
+        background-position: center;
+    }
+"""
 
 game = Game()
 game_round = Round()

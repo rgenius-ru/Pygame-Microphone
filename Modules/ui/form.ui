@@ -27,7 +27,7 @@
     <item row="0" column="0">
      <widget class="QFrame" name="frame">
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
@@ -138,6 +138,9 @@
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
             </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 255, 255);</string>
+            </property>
             <property name="text">
              <string>ВЫ ОРЁТЕ ВЕЛИКОЛЕПНО!</string>
             </property>
@@ -177,6 +180,9 @@
                <layout class="QVBoxLayout" name="verticalLayout_2">
                 <item>
                  <widget class="QLabel" name="command_1_label">
+                  <property name="styleSheet">
+                   <string notr="true">color: rgb(255, 255, 255);</string>
+                  </property>
                   <property name="text">
                    <string>Команда1</string>
                   </property>
@@ -200,6 +206,9 @@
                    </item>
                    <item>
                     <widget class="QLabel" name="cmd_1_itogi_text_label">
+                     <property name="styleSheet">
+                      <string notr="true">color: rgb(255, 255, 255);</string>
+                     </property>
                      <property name="text">
                       <string>Итог</string>
                      </property>
@@ -210,6 +219,9 @@
                    </item>
                    <item>
                     <widget class="QLabel" name="cmd_1_itogi_label">
+                     <property name="styleSheet">
+                      <string notr="true">color: rgb(255, 255, 255);</string>
+                     </property>
                      <property name="text">
                       <string>0</string>
                      </property>
@@ -245,6 +257,9 @@
                <layout class="QVBoxLayout" name="verticalLayout_3">
                 <item>
                  <widget class="QLabel" name="command_2_label">
+                  <property name="styleSheet">
+                   <string notr="true">color: rgb(255, 255, 255);</string>
+                  </property>
                   <property name="text">
                    <string>Команда2</string>
                   </property>
@@ -268,6 +283,9 @@
                    </item>
                    <item>
                     <widget class="QLabel" name="cmd_2_itogi_text_label">
+                     <property name="styleSheet">
+                      <string notr="true">color: rgb(255, 255, 255);</string>
+                     </property>
                      <property name="text">
                       <string>Итог</string>
                      </property>
@@ -278,6 +296,9 @@
                    </item>
                    <item>
                     <widget class="QLabel" name="cmd_2_itogi_label">
+                     <property name="styleSheet">
+                      <string notr="true">color: rgb(255, 255, 255);</string>
+                     </property>
                      <property name="text">
                       <string>0</string>
                      </property>
@@ -300,6 +321,9 @@
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
               <widget class="QLabel" name="game_mode_label">
+               <property name="styleSheet">
+                <string notr="true">color: rgb(255, 255, 255);</string>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -307,6 +331,9 @@
              </item>
              <item>
               <widget class="QLabel" name="current_player_label">
+               <property name="styleSheet">
+                <string notr="true">color: rgb(255, 255, 255);</string>
+               </property>
                <property name="text">
                 <string/>
                </property>
